@@ -13,5 +13,5 @@ For start this Spring Boot app, you neet to use the follows commands:
 	> mvn spring-boot:run -Drun.arguments="word"
 	
 * For read a specific word (example for word "hello")
-	> mvn spring-boot:run -Drun.arguments="word hello"
+	> mvn spring-boot:run -Drun.arguments="word,hello"
 	
