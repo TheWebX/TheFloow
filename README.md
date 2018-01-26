@@ -11,6 +11,7 @@ For start this Spring Boot app, you neet to use the follows commands:
 	
 * For read the popular words elaborated, use the command: 
 	> mvn spring-boot:run -Drun.arguments="word"
-	OR for the specific (example for word "hello")
+	
+* For read a specific word (example for word "hello")
 	> mvn spring-boot:run -Drun.arguments="word hello"
 	
