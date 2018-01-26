@@ -10,7 +10,7 @@ For start this Spring Boot app, you neet to use the follows commands:
 	> mvn spring-boot:run -Drun.arguments="elaborate"
 	
 * For read the popular words elaborated, use the command: 
-	> mvn spring-boot:run -Drun.arguments="word"
+	> mvn spring-boot:run -Drun.arguments="read"
 	
 * For read a specific word (example for word "hello")
 	> mvn spring-boot:run -Drun.arguments="read,hello"
