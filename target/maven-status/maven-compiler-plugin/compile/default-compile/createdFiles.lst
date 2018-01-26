@@ -1,0 +1,7 @@
+com\thefloow\examples\beans\CollectedWord.class
+com\thefloow\examples\AppConfig.class
+com\thefloow\examples\PopularWordService.class
+com\thefloow\examples\beans\ParsedData.class
+com\thefloow\examples\beans\MapReduceScripts.class
+com\thefloow\examples\AppRunner.class
+com\thefloow\examples\beans\PopularWord.class
