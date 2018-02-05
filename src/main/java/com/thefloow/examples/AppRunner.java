@@ -74,21 +74,24 @@ public class AppRunner implements CommandLineRunner {
 					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(isData));
 					String line = null;
 					double offset = 0;
-					double range = 1;
+					double index = 0;
 					Offset offsetBean = null;
 					Query query = new Query();
 					query.addCriteria(Criteria.where("filename").is("data.json"));
 					Update update = new Update();
-					update.inc("value", range);
+					update.inc("value", 1);
 					offsetBean = operations.findAndModify(query, update, Offset.class);
-					offset = offsetBean.getValue().intValue();
+					offset = offsetBean.getValue().doubleValue();
 					while((line = bufferedReader.readLine()) != null) {
-						offsetBean = operations.findAndModify(query, update, Offset.class);
-						offset = offsetBean.getValue().intValue();
-						ParsedData collectedWords = gson.fromJson(line, ParsedData.class);
-						operations.insertAll(collectedWords.getWords());
+						if(offset == index) {
+							ParsedData collectedWords = gson.fromJson(line, ParsedData.class);
+							operations.insertAll(collectedWords.getWords());
+							offsetBean = operations.findAndModify(query, update, Offset.class);
+							offset = offsetBean.getValue().intValue();
+						}
+						index++;
 					}
-					log.log(Level.INFO, "Finished with offset: " + offset);
+					log.log(Level.FINE, "Finished with offset: " + offset);
 				}finally {
 					if(isData != null)
 						isData.close();
