@@ -80,14 +80,14 @@ public class AppRunner implements CommandLineRunner {
 					query.addCriteria(Criteria.where("filename").is("data.json"));
 					Update update = new Update();
 					update.inc("value", 1);
-					offsetBean = operations.findAndModify(query, update, Offset.class);
-					offset = offsetBean.getValue().doubleValue();
+					offsetBean = operations.findOne(query, Offset.class);
+					offset = offsetBean.getValue().doubleValue()-1;
 					while((line = bufferedReader.readLine()) != null) {
 						if(offset == index) {
 							ParsedData collectedWords = gson.fromJson(line, ParsedData.class);
 							operations.insertAll(collectedWords.getWords());
 							offsetBean = operations.findAndModify(query, update, Offset.class);
-							offset = offsetBean.getValue().intValue();
+							offset = offsetBean.getValue().doubleValue();
 						}
 						index++;
 					}
