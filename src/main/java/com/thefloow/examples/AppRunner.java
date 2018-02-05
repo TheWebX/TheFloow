@@ -1,5 +1,6 @@
 package com.thefloow.examples;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
@@ -14,11 +15,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.thefloow.examples.beans.CollectedWord;
+import com.thefloow.examples.beans.Offset;
 import com.thefloow.examples.beans.ParsedData;
 import com.thefloow.examples.beans.PopularWord;
 
@@ -66,8 +71,24 @@ public class AppRunner implements CommandLineRunner {
 				InputStream isData = null;
 				try {
 					isData = AppRunner.class.getResourceAsStream("/com/thefloow/examples/configs/data.json");
-					ParsedData collectedWords = gson.fromJson(new InputStreamReader(isData), ParsedData.class);
-					operations.insertAll(collectedWords.getWords());
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(isData));
+					String line = null;
+					double offset = 0;
+					double range = 1;
+					Offset offsetBean = null;
+					Query query = new Query();
+					query.addCriteria(Criteria.where("filename").is("data.json"));
+					Update update = new Update();
+					update.inc("value", range);
+					offsetBean = operations.findAndModify(query, update, Offset.class);
+					offset = offsetBean.getValue().intValue();
+					while((line = bufferedReader.readLine()) != null) {
+						offsetBean = operations.findAndModify(query, update, Offset.class);
+						offset = offsetBean.getValue().intValue();
+						ParsedData collectedWords = gson.fromJson(line, ParsedData.class);
+						operations.insertAll(collectedWords.getWords());
+					}
+					log.log(Level.INFO, "Finished with offset: " + offset);
 				}finally {
 					if(isData != null)
 						isData.close();
