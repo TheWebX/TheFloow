@@ -81,13 +81,22 @@ public class AppRunner implements CommandLineRunner {
 					Update update = new Update();
 					update.inc("value", 1);
 					offsetBean = operations.findOne(query, Offset.class);
-					offset = offsetBean.getValue().doubleValue()-1;
+					offset = offsetBean.getValue().doubleValue();
 					while((line = bufferedReader.readLine()) != null) {
 						if(offset == index) {
 							ParsedData collectedWords = gson.fromJson(line, ParsedData.class);
-							operations.insertAll(collectedWords.getWords());
-							offsetBean = operations.findAndModify(query, update, Offset.class);
-							offset = offsetBean.getValue().doubleValue();
+							for(CollectedWord entry : collectedWords.getWords()) {
+								entry.setOffset(offset);
+							}
+							Query check = new Query();
+							check.addCriteria(Criteria.where("offset").is(offset));
+							if(operations.exists(check, CollectedWord.class)) {
+								offsetBean = operations.findOne(query, Offset.class);
+							}else{
+								operations.insertAll(collectedWords.getWords());
+								offsetBean = operations.findAndModify(query, update, Offset.class);
+							}
+							offset = offsetBean.getValue().doubleValue()+1;
 						}
 						index++;
 					}

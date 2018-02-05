@@ -14,12 +14,14 @@ public class CollectedWord {
     @Indexed(direction = IndexDirection.ASCENDING)
 	private String word;
 	private Integer hits;
+	private Double offset;
 
     @PersistenceConstructor
-	public CollectedWord(String word, Integer hits) {
+	public CollectedWord(String word, Integer hits, Double offset) {
 		super();
 		this.word = word;
 		this.hits = hits;
+		this.offset = offset;
 	}
 
 	public String getWord() {
@@ -36,6 +38,14 @@ public class CollectedWord {
 
 	public void setHits(Integer hits) {
 		this.hits = hits;
+	}
+
+	public Double getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Double offset) {
+		this.offset = offset;
 	}
 
 	@Override
